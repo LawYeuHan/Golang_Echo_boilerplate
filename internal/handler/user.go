@@ -4,6 +4,7 @@ import (
 	"ecpos/internal/service"
 	"ecpos/pkg/helper/resp"
 	"ecpos/pkg/log"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -48,7 +49,10 @@ func (uh *userHandler) GetUserByIDWithError(ctx echo.Context) error {
 
 	user, err := uh.userService.GetUserByIDWithError(id)
 	if err != nil {
-		return resp.HandleError(ctx, http.StatusInternalServerError, log.GetErrCode(err), "user not found", nil, err)
+		if errors.Is(err, log.ErrNotFound) {
+			return resp.HandleError(ctx, http.StatusBadRequest, log.GetErrCode(err), "user not found", nil, err)
+		}
+		return resp.HandleError(ctx, http.StatusInternalServerError, log.GetErrCode(err), "something went wrong", nil, err)
 	}
 	return resp.HandleSuccess(ctx, user)
 }

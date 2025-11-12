@@ -32,5 +32,5 @@ func (r *userRepository) FirstByID(id int) (*model.User, error) {
 
 func (r *userRepository) ErrorExample(id int) (*model.User, error) {
 
-	return nil, log.CustomError(log.ErrCodeRepo, errors.New("something went wrong"))
+	return nil, log.CustomError(log.ErrRepo, errors.New("something went wrong"))
 }
